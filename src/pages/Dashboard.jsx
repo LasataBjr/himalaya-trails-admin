@@ -1,7 +1,11 @@
 
 import DashboardStats from "../components/dashboard/DashboardStats";
 import RecentBookings from "../components/dashboard/RecentBookings";
+import UpcomingTours from "../components/dashboard/UpcomingTours";
 
+{/* Use Props: When a component is an independent visual shell used multiple times with different data (like a Card, a Button, or an Input Field).
+ Import Directly: When a component is a specific structural feature on a page that owns its specific dataset.*/}
+ 
 export default function Dashboard() {
   return (
     <div className="space-y-8">
@@ -25,9 +29,9 @@ export default function Dashboard() {
           <RecentBookings />
         </div>
         
-        {/* Right Side: Placeholder for Part 3 UpcomingTours */}
-        <div className="bg-white h-64 border border-dashed border-stone-300 rounded-2xl p-6 flex items-center justify-center text-xs font-mono text-stone-400 opacity-40">
-          [Upcoming: UpcomingTours Stack Panel Node]
+        {/* Right Side:  */}
+        <div className="lg:col-span-1">
+          <UpcomingTours />
         </div>
       </div>
     </div>
