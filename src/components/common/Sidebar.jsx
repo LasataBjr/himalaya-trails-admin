@@ -32,8 +32,9 @@ export default function Sidebar() {
 
       {/* Navigation Links Column */}
       <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+        {/* Navigation Links with Active State Highlighting */}
         {menuItems.map((item) => (
-          <NavLink
+          <NavLink /*knows exactly when its target path matches the current address bar*/
             key={item.path}
             to={item.path}
             className={({ isActive }) => `
@@ -44,6 +45,7 @@ export default function Sidebar() {
               }
             `}
           >
+            {/* Render the icon and label with conditional styling based on active state */}
             {({ isActive }) => (
               <>
                 {/* Small Left Indicator Active Pill */}
