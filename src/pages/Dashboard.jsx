@@ -1,11 +1,14 @@
 // src/pages/Dashboard.jsx
 import { FiPlus, FiBriefcase } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import RecentBookings from "../components/dashboard/RecentBookings";
 import UpcomingTours from "../components/dashboard/UpcomingTours";
 import TopDestinations from "../components/dashboard/TopDestinations";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-12">
       
@@ -22,7 +25,9 @@ export default function Dashboard() {
         
         {/* Quick Action Button Control Cluster */}
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 px-4 py-2 border border-stone-200 text-xs font-bold text-stone-600 rounded-xl bg-white hover:bg-stone-50 active:bg-stone-100 transition-all shadow-sm">
+          <button
+            onClick={() => navigate("/packages")}
+            className="inline-flex items-center gap-2 px-4 py-2 border border-stone-200 text-xs font-bold text-stone-600 rounded-xl bg-white hover:bg-stone-50 active:bg-stone-100 transition-all shadow-sm">
             <FiPlus size={14} strokeWidth={2.5} />
             <span>Add Package</span>
           </button>

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { initialPackages } from "../data/packages";
+import { useTravel } from "../components/hooks/useTravel";
 import PackageGrid from "../components/packages/PackageGrid";
 import { FiPlus } from "react-icons/fi";
 import SearchBar from "../components/packages/SearchBar"; 
@@ -10,22 +10,13 @@ import PackageForm from "../components/packages/PackageForm";
 
 export default function Packages() {
 
-  // Primary Master Data State Pipeline Initialization
-  const [packages, setPackages] = useState(() => {
-    const savedPackages = localStorage.getItem("nepal_travel_packages"); // Retrieve from localStorage if available
-    // If found, convert the string back to a JS array; if not, default to an empty list
-    return savedPackages ? JSON.parse(savedPackages) : initialPackages;
-  });
-
-  // This listens exclusively to the master 'packages' array variable.
-  useEffect(() => {
-    localStorage.setItem("nepal_travel_packages", JSON.stringify(packages));
-  }, [packages]); // Runs automatically every time any element is added, edited, or deleted!
+  // Consume global state data and actions from TravelContext
+  const { packages, addPackage, updatePackage, deletePackage } = useTravel();
 
   // Modal visibility overlay anchor state
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // 2. NEW: Tracking state for Edit Mode
+  // Tracking state for Edit Mode
   const [editingPackage, setEditingPackage] = useState(null);
 
   // Search State
@@ -42,9 +33,9 @@ export default function Packages() {
   };
 
   // APPEND HANDLER ENGINE: Spread Operator insertion pipeline
-  const handleSaveNewPackage = (freshPackage) => {
-    setPackages([...packages, freshPackage]); 
-  };
+  // const handleSaveNewPackage = (freshPackage) => {
+  //   setPackages([...packages, freshPackage]); 
+  // };
 
   //Edit the clicked package
   const handleEditIntent = (targetPackage) => {
@@ -53,18 +44,21 @@ export default function Packages() {
   };
 
   // Handle edit update submission and update the master state
-  const handleUpdatePackage = (updatedPackage) => {
-    setPackages(
-      packages.map((pkg) => (pkg.id === updatedPackage.id ? updatedPackage : pkg))
-    );
-    setEditingPackage(null); // Clear out edit state mode memory
-  };
+  // const handleUpdatePackage = (updatedPackage) => {
+  //   setPackages(
+  //     packages.map((pkg) => (pkg.id === updatedPackage.id ? updatedPackage : pkg))
+  //   );
+  //   setEditingPackage(null); // Clear out edit state mode memory
+  // };
 
   const handleDeleteExecution = (targetId) => {
     const confirmation = window.confirm("Are you sure you want to remove this travel package from local state?");
     if (confirmation) {
       // JavaScript filter array method mutation execution
-      setPackages(packages.filter((item) => item.id !== targetId));
+      // setPackages(packages.filter((item) => item.id !== targetId));
+
+      // Call your global delete context action directly
+      deletePackage(targetId);
     }
     // Safety check: if you delete the item you are currently editing, cancel edit mode
     if (editingPackage?.id === targetId) {
@@ -150,7 +144,18 @@ export default function Packages() {
           }} 
         
         // If editingPackage is active, send it to update engine. If null, append a new package!
-        onSave={editingPackage ? handleUpdatePackage : handleSaveNewPackage} 
+        // onSave={editingPackage ? handleUpdatePackage : handleSaveNewPackage} 
+
+        // Point directly to your context update and add functions!
+        onSave={(formData) => {
+          if (editingPackage) {
+            updatePackage(formData);
+          } else {
+            addPackage(formData);
+          }
+          setIsFormOpen(false);
+          setEditingPackage(null);
+        }}
         
         // Pass down the current selection data slot
         editingPackage={editingPackage} 
