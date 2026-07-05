@@ -5,10 +5,16 @@ import PackageGrid from "../components/packages/PackageGrid";
 import { FiPlus } from "react-icons/fi";
 import SearchBar from "../components/packages/SearchBar"; 
 import PackageFilter from "../components/packages/PackageFilter"; 
+import PackageForm from "../components/packages/PackageForm";
+
 
 export default function Packages() {
+
   // Primary Master Data State Pipeline Initialization
   const [packages, setPackages] = useState(initialPackages);
+
+  // Modal visibility overlay anchor state
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Search State
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,9 +24,14 @@ export default function Packages() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  // Interface Wireframe Handlers (We will populate these in Parts 6, 7, & 8)
+  // Populate the form with new package data and update the master state
   const handleAddNewTrigger = () => {
-    alert("Form modal will trigger open in Part 6!");
+    setIsFormOpen(true);
+  };
+
+  // APPEND HANDLER ENGINE: Spread Operator insertion pipeline
+  const handleSaveNewPackage = (freshPackage) => {
+    setPackages([...packages, freshPackage]); 
   };
 
   const handleEditIntent = (targetPackage) => {
@@ -37,11 +48,11 @@ export default function Packages() {
 
   // This derives a filtered array on every render pass without destroying our master state data.
   const filteredPackages = packages.filter((pkg) => {
-    // 1. Text Search Filter (Case-insensitive title match)
+    // Text Search Filter (Case-insensitive title match)
     const matchesSearch = pkg.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           pkg.destination.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // 2. Dropdown Select Filters (If empty option "" is selected, condition automatically passes)
+    // Dropdown Select Filters (If empty option "" is selected, condition automatically passes)
     const matchesDestination = selectedDestination === "" || pkg.destination === selectedDestination;
     const matchesDifficulty = selectedDifficulty === "" || pkg.difficulty === selectedDifficulty;
     const matchesStatus = selectedStatus === "" || pkg.status === selectedStatus;
@@ -100,6 +111,13 @@ export default function Packages() {
         packagesList={filteredPackages} 
         onEditClick={handleEditIntent} 
         onDeleteClick={handleDeleteExecution} 
+      />
+
+      {/* ATTACH THE BACKDROP OVERLAY ELEMENT LAYER */}
+      <PackageForm 
+        isOpen={isFormOpen} 
+        onClose={() => setIsFormOpen(false)} 
+        onSave={handleSaveNewPackage} 
       />
 
     </div>
