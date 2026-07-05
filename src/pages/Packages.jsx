@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { initialPackages } from "../data/packages";
 import PackageGrid from "../components/packages/PackageGrid";
 import { FiPlus } from "react-icons/fi";
@@ -11,7 +11,16 @@ import PackageForm from "../components/packages/PackageForm";
 export default function Packages() {
 
   // Primary Master Data State Pipeline Initialization
-  const [packages, setPackages] = useState(initialPackages);
+  const [packages, setPackages] = useState(() => {
+    const savedPackages = localStorage.getItem("nepal_travel_packages"); // Retrieve from localStorage if available
+    // If found, convert the string back to a JS array; if not, default to an empty list
+    return savedPackages ? JSON.parse(savedPackages) : initialPackages;
+  });
+
+  // This listens exclusively to the master 'packages' array variable.
+  useEffect(() => {
+    localStorage.setItem("nepal_travel_packages", JSON.stringify(packages));
+  }, [packages]); // Runs automatically every time any element is added, edited, or deleted!
 
   // Modal visibility overlay anchor state
   const [isFormOpen, setIsFormOpen] = useState(false);
