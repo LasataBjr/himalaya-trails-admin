@@ -16,6 +16,9 @@ export default function Packages() {
   // Modal visibility overlay anchor state
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  // 2. NEW: Tracking state for Edit Mode
+  const [editingPackage, setEditingPackage] = useState(null);
+
   // Search State
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -34,8 +37,18 @@ export default function Packages() {
     setPackages([...packages, freshPackage]); 
   };
 
+  //Edit the clicked package
   const handleEditIntent = (targetPackage) => {
-    alert(`Editing Intent Captured for: ${targetPackage.title}`);
+    setEditingPackage(targetPackage); // Store the object we want to modify
+    setIsFormOpen(true);              // Open up the exact same form modal!
+  };
+
+  // Handle edit update submission and update the master state
+  const handleUpdatePackage = (updatedPackage) => {
+    setPackages(
+      packages.map((pkg) => (pkg.id === updatedPackage.id ? updatedPackage : pkg))
+    );
+    setEditingPackage(null); // Clear out edit state mode memory
   };
 
   const handleDeleteExecution = (targetId) => {
@@ -43,6 +56,10 @@ export default function Packages() {
     if (confirmation) {
       // JavaScript filter array method mutation execution
       setPackages(packages.filter((item) => item.id !== targetId));
+    }
+    // Safety check: if you delete the item you are currently editing, cancel edit mode
+    if (editingPackage?.id === targetId) {
+      setEditingPackage(null);
     }
   };
 
@@ -115,9 +132,19 @@ export default function Packages() {
 
       {/* ATTACH THE BACKDROP OVERLAY ELEMENT LAYER */}
       <PackageForm 
-        isOpen={isFormOpen} 
-        onClose={() => setIsFormOpen(false)} 
-        onSave={handleSaveNewPackage} 
+        isOpen={isFormOpen}
+        
+        // Clean close handles resetting both triggers safely
+          onClose={() => {
+            setIsFormOpen(false);
+            setEditingPackage(null);
+          }} 
+        
+        // If editingPackage is active, send it to update engine. If null, append a new package!
+        onSave={editingPackage ? handleUpdatePackage : handleSaveNewPackage} 
+        
+        // Pass down the current selection data slot
+        editingPackage={editingPackage} 
       />
 
     </div>

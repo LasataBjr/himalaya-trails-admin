@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 
-export default function PackageForm({ isOpen, onClose, onSave }) {
+export default function PackageForm({ isOpen, onClose, onSave, editingPackage }) {
   // Unified Form State Object
   const initialFormState = {
     title: "",
@@ -15,6 +15,15 @@ export default function PackageForm({ isOpen, onClose, onSave }) {
 
   const [formData, setFormData] = useState(initialFormState);
 
+   // Listens to incoming target data switches
+    useEffect(() => {
+        if (editingPackage) {
+        setFormData(editingPackage); // Load existing card values into the text inputs
+        } else {
+        setFormData(initialFormState); // Reset to blank inputs if creating brand new data
+        }
+    }, [editingPackage, isOpen]); // Runs code every single time modal toggles or targets shift
+    
   // Universal Input Change Handler
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,9 +45,10 @@ export default function PackageForm({ isOpen, onClose, onSave }) {
     }
 
     // Assemble form state details into a structured package payload object
+    //Keep old structure but preserve ID timestamp when in edit mode
     const newPackage = {
       ...formData,
-      id: Date.now(), // Create a unique pseudo ID timestamp
+      id: editingPackage ? editingPackage.id : Date.now(), // Create a unique pseudo ID timestamp
       price: Number(formData.price),
       // Fallback decorative cover image if user leaves it blank
       image: formData.image || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600&auto=format&fit=crop"
@@ -58,7 +68,9 @@ export default function PackageForm({ isOpen, onClose, onSave }) {
         
         {/* Modal Branding Header */}
         <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
-          <h2 className="text-sm font-bold text-content-heading tracking-tight">Add New Travel Package</h2>
+          <h2 className="text-sm font-bold text-content-heading tracking-tight">
+            {editingPackage ? "Edit Travel Package" : "Add New Travel Package"}
+          </h2>
           <button onClick={onClose} className="p-1.5 hover:bg-stone-100 text-stone-400 hover:text-stone-600 rounded-lg transition-colors">
             <FiX size={16} />
           </button>
