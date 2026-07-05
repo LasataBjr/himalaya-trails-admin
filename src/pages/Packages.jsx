@@ -3,10 +3,20 @@ import { useState } from "react";
 import { initialPackages } from "../data/packages";
 import PackageGrid from "../components/packages/PackageGrid";
 import { FiPlus } from "react-icons/fi";
+import SearchBar from "../components/packages/SearchBar"; 
+import PackageFilter from "../components/packages/PackageFilter"; 
 
 export default function Packages() {
   // Primary Master Data State Pipeline Initialization
   const [packages, setPackages] = useState(initialPackages);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter States
+  const [selectedDestination, setSelectedDestination] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   // Interface Wireframe Handlers (We will populate these in Parts 6, 7, & 8)
   const handleAddNewTrigger = () => {
@@ -24,6 +34,21 @@ export default function Packages() {
       setPackages(packages.filter((item) => item.id !== targetId));
     }
   };
+
+  // This derives a filtered array on every render pass without destroying our master state data.
+  const filteredPackages = packages.filter((pkg) => {
+    // 1. Text Search Filter (Case-insensitive title match)
+    const matchesSearch = pkg.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          pkg.destination.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // 2. Dropdown Select Filters (If empty option "" is selected, condition automatically passes)
+    const matchesDestination = selectedDestination === "" || pkg.destination === selectedDestination;
+    const matchesDifficulty = selectedDifficulty === "" || pkg.difficulty === selectedDifficulty;
+    const matchesStatus = selectedStatus === "" || pkg.status === selectedStatus;
+
+    // Item passes through if and only if it satisfies all 4 gates
+    return matchesSearch && matchesDestination && matchesDifficulty && matchesStatus;
+  });
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto pb-12">
@@ -49,14 +74,30 @@ export default function Packages() {
         </button>
       </div>
 
-      {/* [PLACEHOLDER FOR SEARCH & FILTER MODULE IN PARTS 4 & 5] */}
-      <div className="p-4 bg-stone-50 border border-stone-200 text-stone-500 text-xs rounded-xl font-medium font-mono">
-        ⏳ SearchBar & Filter Component layout pipelines attach here in the next steps...
+      {/* SEARCH & FILTER MODULE */}
+      <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm flex flex-col md:flex-row md:items-center gap-4">
+        
+        {/* Search Bar Input Node */}
+        <SearchBar 
+          searchTerm={searchTerm} 
+          setSearchTerm={setSearchTerm} 
+        />
+
+        {/* Multi-Select Dropdown Node Array */}
+        <PackageFilter
+          selectedDestination={selectedDestination}
+          onDestinationChange={setSelectedDestination}
+          selectedDifficulty={selectedDifficulty}
+          onDifficultyChange={setSelectedDifficulty}
+          selectedStatus={selectedStatus}
+          onStatusChange={setSelectedStatus}
+        />
+        
       </div>
 
       {/* Main Grid View Layer */}
       <PackageGrid 
-        packagesList={packages} 
+        packagesList={filteredPackages} 
         onEditClick={handleEditIntent} 
         onDeleteClick={handleDeleteExecution} 
       />
