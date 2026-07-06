@@ -108,15 +108,24 @@ export default function Bookings() {
     <div className="space-y-6 max-w-[1400px] mx-auto pb-12">
 
       {/* Page Header */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-content-heading tracking-tight">
+            Bookings Workspace
+          </h1>
 
-      <div>
-        <h1 className="text-2xl font-bold text-content-heading tracking-tight">
-          Bookings Workspace
-        </h1>
+          <p className="mt-1 text-sm text-content-body">
+            Manage customer travel reservations across Nepal.
+          </p>
+        </div>
 
-        <p className="mt-1 text-sm text-content-body">
-          Manage customer travel reservations across Nepal.
-        </p>
+        {/* PRIMARY OPERATIONAL ACTION BUTTON */}
+        <button
+          onClick={handleOpenCreateModal}
+          className="inline-flex items-center justify-center rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-white hover:bg-stone-800 transition-colors shadow-sm"
+        >
+          + New Booking
+        </button>
       </div>
 
       {/* Filters */}
@@ -129,7 +138,6 @@ export default function Bookings() {
         packageFilter={packageFilter}
         setPackageFilter={setPackageFilter}
         packages={packages}
-        onNewBookingClick={handleOpenCreateModal}
       />
 
       {/* Booking Table */}

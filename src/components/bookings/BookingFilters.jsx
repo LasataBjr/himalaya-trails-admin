@@ -6,8 +6,7 @@ function BookingFilters({
   setStatusFilter, 
   packageFilter, 
   setPackageFilter, 
-  packages,
-  onNewBookingClick 
+  packages
 }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
@@ -51,15 +50,7 @@ function BookingFilters({
             </option>
           ))}
         </select>
-      </div>
-
-      {/* PRIMARY OPERATIONAL ACTION BUTTON */}
-      <button
-        onClick={onNewBookingClick}
-        className="inline-flex items-center justify-center rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-white hover:bg-stone-800 transition-colors shadow-sm"
-      >
-        + New Booking
-      </button>
+      </div>     
 
     </div>
   );
