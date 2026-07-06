@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useTravel } from "../components/hooks/useTravel";
+import { useTravel } from "../hooks/useTravel";
 import PackageGrid from "../components/packages/PackageGrid";
 import { FiPlus } from "react-icons/fi";
 import SearchBar from "../components/packages/SearchBar"; 

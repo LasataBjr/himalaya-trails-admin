@@ -1,6 +1,7 @@
 
 import { createContext, useState, useEffect } from "react";
 import { initialPackages } from "../../data/packages"; // Your fallback dummy items
+import { initialBookings } from "../../data/bookings";
 
 // Create a context for travel packages
 export const TravelContext = createContext();
@@ -37,14 +38,45 @@ export function TravelProvider({ children }) {
     setPackages((prev) => prev.filter((pkg) => pkg.id !== id));
   };
 
+  // --- BOOKINGS STATE ENGINE ---
+  const [bookings, setBookings] = useState(() => {
+    const savedBookings = localStorage.getItem("travel_bookings");
+    return savedBookings ? JSON.parse(savedBookings) : initialBookings; // Fallback to your 3 dummy bookings
+  });
+
+  // Keep bookings synced across browser memory reloads too
+  useEffect(() => {
+    localStorage.setItem("travel_bookings", JSON.stringify(bookings));
+  }, [bookings]);
+
+  const addBooking = (newBooking) => {
+    setBookings((prev) => [...prev, newBooking]);
+  };
+
+  const updateBooking = (updatedBooking) => {
+    setBookings((prev) =>
+      prev.map((item) => (item.id === updatedBooking.id ? updatedBooking : item))
+    );
+  };
+
+  const deleteBooking = (id) => {
+    setBookings((prev) => prev.filter((item) => item.id !== id));
+  };
+
     return (
     // Provide the context value to children components
     <TravelContext.Provider
       value={{
-        packages,
-        addPackage,
-        updatePackage,
-        deletePackage,
+          packages,
+          bookings,
+
+          addPackage,
+          updatePackage,
+          deletePackage,
+
+          addBooking,
+          updateBooking,
+          deleteBooking
       }}
     >
       {children} 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { TravelContext } from "../context/TravelContext";
+import { TravelContext } from "../components/context/TravelContext";
 
 export function useTravel() {
   const context = useContext(TravelContext);

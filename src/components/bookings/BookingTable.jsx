@@ -1,7 +1,6 @@
-
 import BookingRow from "./BookingRow";
 
-function BookingTable({ bookings, onDeleteClick }) {
+function BookingTable({ bookings, packages, customers, onEdit, onDelete }) {
   return (
     <div className="w-full overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-sm">
       <table className="w-full text-left border-collapse">
@@ -17,11 +16,11 @@ function BookingTable({ bookings, onDeleteClick }) {
           </tr>
         </thead>
         
-        <tbody className="divide-y divide-stone-100 text-sm">
+        <tbody className="divide-y divide-stone-100">
           {bookings.length === 0 ? (
             <tr>
               <td colSpan="7" className="px-6 py-12 text-center text-stone-400 font-medium">
-                No customer bookings match the selected criteria.
+                No customer bookings recorded matching this criteria.
               </td>
             </tr>
           ) : (
@@ -29,7 +28,10 @@ function BookingTable({ bookings, onDeleteClick }) {
               <BookingRow 
                 key={booking.id} 
                 booking={booking} 
-                onDeleteClick={onDeleteClick}
+                packages={packages}
+                customers={customers}
+                onEdit={onEdit}
+                onDelete={onDelete}
               />
             ))
           )}
