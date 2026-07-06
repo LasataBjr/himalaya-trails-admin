@@ -150,8 +150,8 @@ export default function Bookings() {
           setIsFormOpen(false);
           setActiveEditingBooking(null);
         }}
-        onSave={handleFormSubmission}
-        booking={activeEditingBooking}
+        onSubmit={handleFormSubmission}
+        editingBooking={activeEditingBooking}
         customers={mockCustomers}
         packages={packages}
       />
