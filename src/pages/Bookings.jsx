@@ -1,51 +1,159 @@
-
+import { useState } from "react";
 import { useTravel } from "../hooks/useTravel";
-import BookingTable from "../components/bookings/BookingTable";
 
-// Local state array for Customers to resolve relational ID mappings
+import BookingTable from "../components/bookings/BookingTable";
+import BookingFilters from "../components/bookings/BookingFilters";
+import BookingForm from "../components/bookings/BookingForm";
+
+// Temporary mock customers
+// (Later we'll move these into CustomerContext)
 const mockCustomers = [
   { id: 101, name: "Ram Sharma", email: "ram@example.com" },
   { id: 102, name: "Sita Lama", email: "sita@example.com" },
-  { id: 103, name: "John Smith", email: "john@example.com" }
+  { id: 103, name: "John Smith", email: "john@example.com" },
 ];
 
 export default function Bookings() {
-  const { bookings, packages } = useTravel();
+  const {
+    bookings = [],
+    packages = [],
 
-  // Temporary placeholder functions for our upcoming edit/delete features
-  const handleEditClick = (booking) => {
-    console.log("Edit requested for booking:", booking.id);
+    addBooking,
+    updateBooking,
+    deleteBooking,
+  } = useTravel();
+
+  // -----------------------------
+  // Filter State
+  // -----------------------------
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [packageFilter, setPackageFilter] = useState("");
+
+  // -----------------------------
+  // Modal State
+  // -----------------------------
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [activeEditingBooking, setActiveEditingBooking] = useState(null);
+
+  // -----------------------------
+  // Filtering
+  // -----------------------------
+
+  const filteredBookings = bookings.filter((booking) => {
+    const customer = mockCustomers.find(
+      (c) => c.id === booking.customerId
+    );
+
+    const customerName = customer
+      ? customer.name.toLowerCase()
+      : "";
+
+    const matchesSearch =
+      customerName.includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "" ||
+      booking.status === statusFilter;
+
+    const matchesPackage =
+      packageFilter === "" ||
+      booking.packageId === Number(packageFilter);
+
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesPackage
+    );
+  });
+
+  // -----------------------------
+  // CRUD
+  // -----------------------------
+
+  const handleOpenCreateModal = () => {
+    setActiveEditingBooking(null);
+    setIsFormOpen(true);
+  };
+
+  const handleOpenEditModal = (booking) => {
+    setActiveEditingBooking(booking);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmission = (bookingData) => {
+    if (activeEditingBooking) {
+      updateBooking(bookingData);
+    } else {
+      addBooking(bookingData);
+    }
+
+    setIsFormOpen(false);
+    setActiveEditingBooking(null);
   };
 
   const handleDeleteClick = (booking) => {
-    console.log("Delete requested for booking:", booking.id);
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this booking?"
+    );
+
+    if (!confirmed) return;
+
+    deleteBooking(booking.id);
   };
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto pb-12">
-      {/* Page Heading Headers */}
+
+      {/* Page Header */}
+
       <div>
         <h1 className="text-2xl font-bold text-content-heading tracking-tight">
           Bookings Workspace
         </h1>
-        <p className="text-sm text-content-body mt-1">
-          Manage customer travel reservations and relational data metrics.
+
+        <p className="mt-1 text-sm text-content-body">
+          Manage customer travel reservations across Nepal.
         </p>
       </div>
 
-      {/* Summary KPI Sheet Counter Card */}
-      <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm w-full max-w-xs">
-        <p className="text-sm font-medium text-stone-500">Total Bookings</p>
-        <h2 className="mt-2 text-4xl font-bold text-stone-900">{bookings.length}</h2>
-      </div>
+      {/* Filters */}
 
-      {/* Render our Core Data Sheet Table View */}
-      <BookingTable 
-        bookings={bookings}
+      <BookingFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        packageFilter={packageFilter}
+        setPackageFilter={setPackageFilter}
+        packages={packages}
+        onNewBookingClick={handleOpenCreateModal}
+      />
+
+      {/* Booking Table */}
+
+      <BookingTable
+        bookings={filteredBookings}
         packages={packages}
         customers={mockCustomers}
-        onEdit={handleEditClick}
+        onEdit={handleOpenEditModal}
         onDelete={handleDeleteClick}
+      />
+
+      {/* Booking Modal */}
+
+      <BookingForm
+        isOpen={isFormOpen}
+        onClose={() => {
+          setIsFormOpen(false);
+          setActiveEditingBooking(null);
+        }}
+        onSave={handleFormSubmission}
+        booking={activeEditingBooking}
+        customers={mockCustomers}
+        packages={packages}
       />
     </div>
   );
