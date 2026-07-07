@@ -1,28 +1,30 @@
 import { useState } from "react";
 import { useTravel } from "../hooks/useTravel";
 
+import { initialCustomers } from "../data/customers";
+
 import BookingTable from "../components/bookings/BookingTable";
 import BookingFilters from "../components/bookings/BookingFilters";
 import BookingForm from "../components/bookings/BookingForm";
 
-// Temporary mock customers
-// (Later we'll move these into CustomerContext)
-const mockCustomers = [
-  { id: 101, name: "Ram Sharma", email: "ram@example.com" },
-  { id: 102, name: "Sita Lama", email: "sita@example.com" },
-  { id: 103, name: "John Smith", email: "john@example.com" },
-];
+// const mockCustomers = [
+//   { id: 101, name: "Ram Sharma", email: "ram@example.com" },
+//   { id: 102, name: "Sita Lama", email: "sita@example.com" },
+//   { id: 103, name: "John Smith", email: "john@example.com" },
+// ];
 
 export default function Bookings() {
   const {
     bookings = [],
     packages = [],
+    customers = [],
 
     addBooking,
     updateBooking,
     deleteBooking,
   } = useTravel();
 
+  cons
   // -----------------------------
   // Filter State
   // -----------------------------

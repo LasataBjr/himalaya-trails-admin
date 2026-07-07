@@ -2,38 +2,41 @@
 import { createContext, useState, useEffect } from "react";
 import { initialPackages } from "../../data/packages"; // Your fallback dummy items
 import { initialBookings } from "../../data/bookings";
+import { initialCustomers } from "../../data/customers"; 
 
 // Create a context for travel packages
 export const TravelContext = createContext();
 
 
 export function TravelProvider({ children }) {
+
+  // --- PACKAGES STATE ENGINE ---
   // Read from LocalStorage or fall back to dummy array on initial startup
   const [packages, setPackages] = useState(() => {
-      const saved = localStorage.getItem("travel_packages"); // Retrieve from localStorage if available
-      // If found, convert the string back to a JS array; if not, default to the initialPackages array
+    const saved = localStorage.getItem("travel_packages"); // Retrieve from localStorage if available
+    // If found, convert the string back to a JS array; if not, default to the initialPackages array
     return saved ? JSON.parse(saved) : initialPackages;
   });
 
   // Automatically track changes to packages array and update browser storage
   useEffect(() => {
-    localStorage.setItem("travel_packages", JSON.stringify(packages)); 
+    localStorage.setItem("travel_packages", JSON.stringify(packages));
   }, [packages]);
 
-    // Add a new package to the list
+  // Add a new package to the list
   const addPackage = (newPackage) => {
     setPackages((prev) => [...prev, newPackage]);
-    };
+  };
     
-    // Update an existing package in the list
+  // Update an existing package in the list
   const updatePackage = (updatedPackage) => {
     setPackages((prev) =>
       prev.map((pkg) => (pkg.id === updatedPackage.id ? updatedPackage : pkg))
-      );
+    );
       
-   };
+  };
 
-    // Delete a package from the list
+  // Delete a package from the list
   const deletePackage = (id) => {
     setPackages((prev) => prev.filter((pkg) => pkg.id !== id));
   };
@@ -63,12 +66,16 @@ export function TravelProvider({ children }) {
     setBookings((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // --- CUSTOMERS STATE ENGINE ---
+  const [customers] = useState(initialCustomers); // Customers are static for now, so we don't need to update them
+
     return (
     // Provide the context value to children components
     <TravelContext.Provider
       value={{
           packages,
           bookings,
+          customers,
 
           addPackage,
           updatePackage,
