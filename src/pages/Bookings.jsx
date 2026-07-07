@@ -24,7 +24,7 @@ export default function Bookings() {
     deleteBooking,
   } = useTravel();
 
-  cons
+  
   // -----------------------------
   // Filter State
   // -----------------------------
@@ -45,7 +45,7 @@ export default function Bookings() {
   // -----------------------------
 
   const filteredBookings = bookings.filter((booking) => {
-    const customer = mockCustomers.find(
+    const customer = customers.find(
       (c) => c.id === booking.customerId
     );
 
@@ -147,7 +147,7 @@ export default function Bookings() {
       <BookingTable
         bookings={filteredBookings}
         packages={packages}
-        customers={mockCustomers}
+        customers={customers}
         onEdit={handleOpenEditModal}
         onDelete={handleDeleteClick}
       />
@@ -162,7 +162,7 @@ export default function Bookings() {
         }}
         onSubmit={handleFormSubmission}
         editingBooking={activeEditingBooking}
-        customers={mockCustomers}
+        customers={customers}
         packages={packages}
       />
     </div>
