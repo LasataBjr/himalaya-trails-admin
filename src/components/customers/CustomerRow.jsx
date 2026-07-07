@@ -80,7 +80,7 @@ export default function CustomerRow({ customer, bookings }) {
               : "bg-stone-100 text-stone-500"
           }`}
         >
-          {totalBookings > 0 ? "Active Traveler" : "Inactive"}
+            {totalBookings > 0 ? "Active Traveler" : "Inactive"}  {/* Display status based on booking count */}
         </span>
       </td>
     </tr>
