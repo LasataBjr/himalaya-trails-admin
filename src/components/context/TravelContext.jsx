@@ -75,7 +75,29 @@ export function TravelProvider({ children }) {
   const [customers] = useState(initialCustomers); // Customers are static for now, so we don't need to update them
 
   // --- DESTINATIONS STATE ENGINE ---
-  const [destinations, setDestinations] = useState(initialDestinations);
+  const [destinations, setDestinations] = useState(() => {
+    const savedDestinations = localStorage.getItem("travel_destinations");
+    return savedDestinations ? JSON.parse(savedDestinations) : initialDestinations; // Fallback to your dummy destinations
+  });
+
+  // Keep destinations synced across browser memory reloads too
+  useEffect(() => {
+    localStorage.setItem("travel_destinations", JSON.stringify(destinations));
+  }, [destinations]);
+
+  const addDestination = (newDest) => {
+    setDestinations((prev) => [newDest, ...prev]);
+  }
+
+  const updateDestination = (updatedDest) => {
+  setDestinations((prev) =>
+    prev.map((dest) => (dest.id === updatedDest.id ? updatedDest : dest))
+  );
+};
+
+const deleteDestination = (id) => {
+  setDestinations((prev) => prev.filter((dest) => dest.id !== id));
+};
 
     return (
     // Provide the context value to children components
@@ -92,7 +114,11 @@ export function TravelProvider({ children }) {
 
           addBooking,
           updateBooking,
-          deleteBooking
+          deleteBooking,
+
+          addDestination,
+          updateDestination,
+          deleteDestination
       }}
     >
       {children} 

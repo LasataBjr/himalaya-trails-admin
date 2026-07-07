@@ -7,7 +7,7 @@ import DestinationFilters from "../components/destinations/DestinationFilters";
 import DestinationForm from "../components/destinations/DestinationForm";
 
 export default function Destinations() {
-  const { destinations } = useTravel();
+  const { destinations, addDestination, updateDestination, deleteDestination } = useTravel();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -45,7 +45,7 @@ export default function Destinations() {
   // Safe deletion routine
   const handleDeleteDestination = (id) => {
     if (window.confirm("Are you certain you want to remove this travel destination option?")) {
-      setDestinations((prev) => prev.filter((dest) => dest.id !== id));
+      deleteDestination(id);
     }
   };
 
@@ -64,15 +64,12 @@ export default function Destinations() {
   // Handle both Add and Edit payload processing
   const handleSaveDestination = (savedPayload) => {
     if (editingDestination) {
-      // Edit Mode: Scan context array and swap matching profile index
-      setDestinations((prev) =>
-        prev.map((dest) => (dest.id === savedPayload.id ? savedPayload : dest))
-      );
+      // Edit Mode: Update existing destination in the list
+      updateDestination(savedPayload);
     } else {
-      // Add Mode: Prepend fresh payload straight onto the head of the list
-      setDestinations((prev) => [savedPayload, ...prev]);
-    }
-    
+      // Add Mode: Prepend new destination to the list
+      addDestination(savedPayload);
+    }    
     handleCloseModal();
   };
 
