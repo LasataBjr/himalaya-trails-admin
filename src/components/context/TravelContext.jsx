@@ -1,8 +1,13 @@
+// Context API is used in this project for state management. 
+// The TravelContext is created to manage the state of travel packages, bookings, and customers across the application. 
+// It provides functions to add, update, and delete packages and bookings, while customers are kept static for now. 
+// The context is initialized with dummy data and persists changes to localStorage for a better user experience.
 
 import { createContext, useState, useEffect } from "react";
 import { initialPackages } from "../../data/packages"; // Your fallback dummy items
 import { initialBookings } from "../../data/bookings";
 import { initialCustomers } from "../../data/customers"; 
+import { initialDestinations } from "../../data/destinations"; 
 
 // Create a context for travel packages
 export const TravelContext = createContext();
@@ -69,6 +74,9 @@ export function TravelProvider({ children }) {
   // --- CUSTOMERS STATE ENGINE ---
   const [customers] = useState(initialCustomers); // Customers are static for now, so we don't need to update them
 
+  // --- DESTINATIONS STATE ENGINE ---
+  const [destinations, setDestinations] = useState(initialDestinations);
+
     return (
     // Provide the context value to children components
     <TravelContext.Provider
@@ -76,6 +84,7 @@ export function TravelProvider({ children }) {
           packages,
           bookings,
           customers,
+          destinations,
 
           addPackage,
           updatePackage,
