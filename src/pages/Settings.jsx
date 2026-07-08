@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
 export default function Settings() {
-  // 1. Initial State Definition with LocalStorage Fallbacks
-  const [agencyInfo, setAgencyInfo] = useState(() => {
+  // Initial State Definition with LocalStorage Fallbacks
+  const [agencyInfo, setAgencyInfo] = useState(() => { //Lazy initialization to avoid unnecessary parsing on every render
     const saved = localStorage.getItem("agency_settings");
     return saved ? JSON.parse(saved) : {
       name: "Nepal Exploration Travel",
@@ -11,7 +11,7 @@ export default function Settings() {
       website: "www.nepalexploration.com",
       address: "Thamel, Kathmandu, Nepal",
       logoUrl: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=150&auto=format&fit=crop",
-      primaryColor: "#7BBCD9", // Your signature aesthetic palette tone
+      primaryColor: "#7BBCD9", 
       currency: "NPR (Rs.)",
       language: "English",
       dateFormat: "DD/MM/YYYY",
@@ -25,21 +25,22 @@ export default function Settings() {
 
   const [isSaved, setIsSaved] = useState(false);
 
-  // 2. Multi-Field Input Handler Engine
+  // Multi-Field Input Handler Engine
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    // Update state based on input type (checkbox vs text/select)
     setAgencyInfo((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
+      ...prev, // Preserve existing state
+      [name]: type === "checkbox" ? checked : value // boolean .checked for checkboxes, string value for others
     }));
   };
 
-  // 3. Simple State Commitment Handler
+  // Simple State Commitment Handler
   const handleSave = (e) => {
-    e.preventDefault();
-    localStorage.setItem("agency_settings", JSON.stringify(agencyInfo));
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000); // Alert banner automatically fades
+    e.preventDefault(); // Prevent default form submission behavior
+    localStorage.setItem("agency_settings", JSON.stringify(agencyInfo)); 
+    setIsSaved(true); 
+    setTimeout(() => setIsSaved(false), 3000); // Alert banner automatically fades after 3 seconds
   };
 
   return (
