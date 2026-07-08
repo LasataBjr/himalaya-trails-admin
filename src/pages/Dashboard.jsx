@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import RecentBookings from "../components/dashboard/RecentBookings";
 import UpcomingTours from "../components/dashboard/UpcomingTours";
-import TopDestinations from "../components/dashboard/TopDestinations";
+import TopDestinations from "../components/dashboard/topDestinations";
 
 export default function Dashboard() {
   const navigate = useNavigate();
