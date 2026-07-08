@@ -16,7 +16,7 @@ export default function Analytics() {
   //  Core Revenue Calculation (Bypassing Cancelled Bookings)
   const totalRevenue = bookings
     .filter((b) => b.status !== "Cancelled")
-    .reduce((sum, b) => sum + Number(b.amount || 0), 0);
+    .reduce((sum, b) => sum + Number(b.amount || 0), 0); 
 
   // Popular Packages & Revenue Data Transform (Sorted Largest to Smallest)
   const calculatedPackageMetrics = packages.map((pkg) => {
