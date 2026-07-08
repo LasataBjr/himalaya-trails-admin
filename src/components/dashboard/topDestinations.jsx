@@ -1,4 +1,4 @@
-// src/components/dashboard/TopDestinations.jsx
+
 import { topDestinations } from "../../data/topDestinations";
 
 export default function TopDestinations() {
